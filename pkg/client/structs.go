@@ -73,3 +73,8 @@ const (
 	OperationUpdatePropertyValue Operation = "UPDATE_PROPERTY_VALUE"
 	OperationDeletePropertyValue Operation = "DELETE_PROPERTY_VALUE"
 )
+
+type ErrorResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
