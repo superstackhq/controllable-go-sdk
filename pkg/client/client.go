@@ -63,7 +63,22 @@ func (c *ControllableClient) UpdatePropertyValue(ctx context.Context, propertyRe
 }
 
 func (c *ControllableClient) DeletePropertyValue(ctx context.Context, propertyReferenceValuePairs *PropertyReferenceValuePairs) (*ExecutionResponse, error) {
-	return nil, nil
+	executionRequest := &ExecutionRequest{
+		Operation:   OperationDeletePropertyValue,
+		Environment: c.config.environment,
+	}
+
+	requests := make([]*PropertyExecutionRequest, len(propertyReferenceValuePairs.Pairs))
+
+	for i, pair := range propertyReferenceValuePairs.Pairs {
+		requests[i] = &PropertyExecutionRequest{
+			Property: pair.Reference,
+			Value:    pair.Value,
+		}
+	}
+
+	executionRequest.Requests = requests
+	return c.httpClient.Execute(ctx, executionRequest)
 }
 
 func (c *ControllableClient) ReadPropertyValue(ctx context.Context, readPropertyRequests *ReadPropertyRequests) (*ExecutionResponse, error) {
