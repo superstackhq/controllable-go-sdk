@@ -1,3 +1,17 @@
+Controllable Golang SDK
+========================
+
+This is the Controllable Golang SDK.
+
+### Usage Example
+
+- Add dependency
+
+```bash
+go get github.com/superstackhq/controllable-go-sdk
+```
+
+```go
 package main
 
 import (
@@ -48,3 +62,4 @@ func main() {
 
 	fmt.Println(result.Responses[0].Value.Data)
 }
+```
