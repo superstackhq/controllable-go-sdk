@@ -13,13 +13,14 @@ type ControllableClient struct {
 type ControllableClientConfig struct {
 	ServerEndpoint string
 	Environment    string
+	AppKey         string
 	ClientTimeout  time.Duration
 }
 
 func NewControllableClient(config *ControllableClientConfig) *ControllableClient {
 	return &ControllableClient{
 		Config:     config,
-		HTTPClient: NewControllableHTTPClient(config.ServerEndpoint, config.ClientTimeout),
+		HTTPClient: NewControllableHTTPClient(config.ServerEndpoint, config.AppKey, config.ClientTimeout),
 	}
 }
 

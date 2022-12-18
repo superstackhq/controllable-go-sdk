@@ -12,13 +12,15 @@ import (
 
 type ControllableHTTPClient struct {
 	Endpoint          string
+	AppKey            string
 	HttpClientTimeout time.Duration
 	Client            *http.Client
 }
 
-func NewControllableHTTPClient(endpoint string, httpClientTimeout time.Duration) *ControllableHTTPClient {
+func NewControllableHTTPClient(endpoint string, appKey string, httpClientTimeout time.Duration) *ControllableHTTPClient {
 	return &ControllableHTTPClient{
 		Endpoint:          endpoint,
+		AppKey:            appKey,
 		HttpClientTimeout: httpClientTimeout,
 		Client: &http.Client{
 			Timeout: httpClientTimeout,
@@ -40,6 +42,8 @@ func (c *ControllableHTTPClient) Execute(ctx context.Context, executionRequest *
 	}
 
 	req = req.WithContext(ctx)
+
+	req.Header.Set("Authorization", fmt.Sprintf("AppKey %s", c.AppKey))
 
 	res, err := c.Client.Do(req)
 
