@@ -82,5 +82,20 @@ func (c *ControllableClient) DeletePropertyValue(ctx context.Context, propertyRe
 }
 
 func (c *ControllableClient) ReadPropertyValue(ctx context.Context, readPropertyRequests *ReadPropertyRequests) (*ExecutionResponse, error) {
-	return nil, nil
+	executionRequest := &ExecutionRequest{
+		Operation:   OperationReadPropertyValue,
+		Environment: c.config.environment,
+	}
+
+	requests := make([]*PropertyExecutionRequest, len(readPropertyRequests.Requests))
+
+	for i, readPropertyRequest := range readPropertyRequests.Requests {
+		requests[i] = &PropertyExecutionRequest{
+			Property: readPropertyRequest.Reference,
+			Params:   readPropertyRequest.Params,
+		}
+	}
+
+	executionRequest.Requests = requests
+	return c.httpClient.Execute(ctx, executionRequest)
 }
