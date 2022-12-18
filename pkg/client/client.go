@@ -6,26 +6,41 @@ import (
 )
 
 type ControllableClient struct {
-	Config     *ControllableClientConfig
-	HTTPClient *ControllableHTTPClient
+	config     *ControllableClientConfig
+	httpClient *ControllableHTTPClient
 }
 
 type ControllableClientConfig struct {
-	ServerEndpoint string
-	Environment    string
-	AppKey         string
-	ClientTimeout  time.Duration
+	serverEndpoint string
+	environment    string
+	appKey         string
+	clientTimeout  time.Duration
 }
 
 func NewControllableClient(config *ControllableClientConfig) *ControllableClient {
 	return &ControllableClient{
-		Config:     config,
-		HTTPClient: NewControllableHTTPClient(config.ServerEndpoint, config.AppKey, config.ClientTimeout),
+		config:     config,
+		httpClient: NewControllableHTTPClient(config.serverEndpoint, config.appKey, config.clientTimeout),
 	}
 }
 
 func (c *ControllableClient) CreatePropertyValue(ctx context.Context, propertyReferenceValuePairs *PropertyReferenceValuePairs) (*ExecutionResponse, error) {
-	return nil, nil
+	executionRequest := &ExecutionRequest{
+		Operation:   OperationCreatePropertyValue,
+		Environment: c.config.environment,
+	}
+
+	requests := make([]*PropertyExecutionRequest, len(propertyReferenceValuePairs.Pairs))
+
+	for i, pair := range propertyReferenceValuePairs.Pairs {
+		requests[i] = &PropertyExecutionRequest{
+			Property: pair.Reference,
+			Value:    pair.Value,
+		}
+	}
+
+	executionRequest.Requests = requests
+	return c.httpClient.Execute(ctx, executionRequest)
 }
 
 func (c *ControllableClient) UpdatePropertyValue(ctx context.Context, propertyReferenceValuePairs *PropertyReferenceValuePairs) (*ExecutionResponse, error) {
