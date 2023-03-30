@@ -36,6 +36,7 @@ type PropertyExecutionRequest struct {
 
 type PropertyExecutionResponse struct {
 	Success bool           `json:"success"`
+	Message string         `json:"message"`
 	Value   *PropertyValue `json:"value"`
 }
 
